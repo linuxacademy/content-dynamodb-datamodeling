@@ -1,0 +1,1 @@
+# content-dynamodb-datamodeling
