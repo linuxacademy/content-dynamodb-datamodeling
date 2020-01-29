@@ -3,7 +3,7 @@
 import time
 
 import boto3
-from boto3.dynamodb.conditions import Attr, Key
+from boto3.dynamodb.conditions import Key
 
 table = boto3.resource("dynamodb").Table("Projects")
 
