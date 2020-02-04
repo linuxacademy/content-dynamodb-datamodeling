@@ -4,7 +4,6 @@ import boto3
 
 client = boto3.client("dynamodb")
 table_name = "TargetStores"
-gsi_name = "Item-index"
 existing_tables = client.list_tables()["TableNames"]
 
 if table_name not in existing_tables:
