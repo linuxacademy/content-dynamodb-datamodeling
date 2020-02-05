@@ -17,6 +17,7 @@ response = client.create_table(
         {"AttributeName": "timestamp", "AttributeType": "N"},
     ],
     BillingMode="PAY_PER_REQUEST",
+    Tags=[{"Key": "DDBTableGroupKey-DataModeling", "Value": "DataModeling"}],
 )
 print(response)
 
@@ -26,6 +27,7 @@ response = client.create_table(
     KeySchema=[{"AttributeName": "segment", "KeyType": "HASH"}],
     AttributeDefinitions=[{"AttributeName": "segment", "AttributeType": "S"}],
     BillingMode="PAY_PER_REQUEST",
+    Tags=[{"Key": "DDBTableGroupKey-DataModeling", "Value": "DataModeling"}],
 )
 print(response)
 

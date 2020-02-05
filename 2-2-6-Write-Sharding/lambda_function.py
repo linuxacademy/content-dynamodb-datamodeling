@@ -10,17 +10,19 @@ from botocore.exceptions import ClientError
 print("Loading function")
 
 dynamodb = boto3.resource("dynamodb")
-table = dynamodb.Table("votes")
+table = dynamodb.Table("votes")  # contains aggregate vote counts
 
 
 def lambda_handler(event, context):
     try:
-        items = table.scan()["Items"]
+        items = table.scan()["Items"]  # scan is okay for small tables
 
         print(items)
 
         a = 0
         b = 0
+
+        # increment vote count for either candidate
 
         for i in items:
             if i["segment"].startswith("Candidate A_"):
