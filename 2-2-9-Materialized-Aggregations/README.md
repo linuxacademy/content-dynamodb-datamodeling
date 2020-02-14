@@ -12,7 +12,7 @@ Role name – `Lambda-AggregateVotesStreams-Role`
 
 Name - `AggregateVotesStreams`
 
-Runtime - `Python 3.7`
+Runtime - `Python 3.8`
 
 Use the execution role created above.
 
