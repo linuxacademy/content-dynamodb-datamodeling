@@ -1,10 +1,5 @@
 #!/bin/sh
 
-################################################################################
-# CHANGE THIS BUCKET NAME FOR YOUR ACCOUNT
-S3_BUCKET=musictagger 
-################################################################################
-
 FUNCTION_NAME=MusicTagger
 ROLE_NAME=$FUNCTION_NAME-Role
 
