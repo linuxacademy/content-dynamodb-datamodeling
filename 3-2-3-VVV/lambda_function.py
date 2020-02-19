@@ -1,5 +1,4 @@
 import json
-import uuid
 import urllib.parse
 
 import boto3
