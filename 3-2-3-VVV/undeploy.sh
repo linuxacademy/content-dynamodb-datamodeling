@@ -21,6 +21,9 @@ aws iam detach-role-policy --role-name $ROLE_NAME \
 aws iam detach-role-policy --role-name $ROLE_NAME \
   --policy-arn arn:aws:iam::aws:policy/AmazonS3FullAccess
 
+aws iam detach-role-policy --role-name $ROLE_NAME \
+  --policy-arn arn:aws:iam::aws:policy/AmazonDynamoDBFullAccess
+
 # Delete IAM exection role
 
 arn=$(aws iam get-role --role-name $ROLE_NAME --output text --query 'Role.Arn')
