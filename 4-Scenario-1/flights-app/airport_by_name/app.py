@@ -19,10 +19,7 @@ def lambda_handler(event, context):
         response = {
             "statusCode": 200,
             "body": json.dumps(result["Items"][0]["PK"]),
-            "headers": {
-                "Content-Type": "application/json",
-                "Access-Control-Allow-Origin": "*",
-            },
+            "headers": {"Content-Type": "application/json"},
         }
         return response
     except Exception as e:
