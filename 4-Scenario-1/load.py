@@ -1,36 +1,41 @@
 #!/usr/bin/env python3
 
+"""Bulk load flights table with data"""
+
 import csv
 import json
 
+import boto3
+from botocore.exceptions import ClientError
+
+dynamodb = boto3.resource("dynamodb")
+table = dynamodb.Table("flights")
+airlines = {}
+airports = {}
+planes = {}
+
 
 def load_airlines():
-    airlines = {}
     with open("airlines.csv", mode="r") as csvfile:
         reader = csv.reader(csvfile)
         for row in reader:
             if row[3]:
                 airlines[row[3]] = row[1]
-    return airlines
 
 
 def load_airports():
-    airports = {}
     with open("airports.csv", mode="r") as csvfile:
         reader = csv.reader(csvfile)
         for row in reader:
             if row[4]:
                 airports[row[4]] = row[1]
-    return airports
 
 
 def load_planes():
-    planes = {}
     with open("planes.csv", mode="r") as csvfile:
         reader = csv.reader(csvfile)
         for row in reader:
             planes[row[1]] = row[0]
-    return planes
 
 
 def format_item(item):
@@ -48,10 +53,11 @@ def format_item(item):
     return data
 
 
-if __name__ == "__main__":
-    airlines = load_airlines()
-    airports = load_airports()
-    planes = load_planes()
+def generate_json():
+    print("Generating bulk load data...")
+    load_airlines()
+    load_airports()
+    load_planes()
 
     tuple_dict = {}
 
@@ -63,7 +69,30 @@ if __name__ == "__main__":
             item = format_item(row)
             tuple_dict[(item["PK"], item["SK"])] = item
 
-        with open("items.json", mode="a") as outfile:
+        with open("items.json", mode="w") as outfile:
             for v in tuple_dict.values():
                 item = json.dumps(v)
                 outfile.write(f"{item}\n")
+
+
+if __name__ == "__main__":
+    generate_json()
+
+    print("Loading flights table...")
+
+    items = []
+
+    with open("items.json", "r") as f:
+        for row in f:
+            items.append(json.loads(row))
+
+    count = 0
+    with table.batch_writer() as batch:
+        for item in items:
+            if count % 1000 == 0:
+                print(f"Wrote {count} items")
+            try:
+                batch.put_item(Item=item)
+            except ClientError as e:
+                print(e)
+            count = count + 1
