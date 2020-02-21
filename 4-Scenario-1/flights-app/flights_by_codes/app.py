@@ -11,9 +11,10 @@ def lambda_handler(event, context):
         print(event)
         src = event["queryStringParameters"]["src"]
         dst = event["queryStringParameters"]["dst"]
-        result = (
-            table.query(KeyConditionExpression=Key("PK").eq(src) & Key("SK").eq(dst)),
+        result = table.query(
+            KeyConditionExpression=Key("PK").eq(src) & Key("SK").eq(dst)
         )
+        print(result)
         response = {
             "statusCode": 200,
             "body": json.dumps(result["Items"][0]),

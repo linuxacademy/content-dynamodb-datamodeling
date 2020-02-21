@@ -9,11 +9,10 @@ table = boto3.resource("dynamodb").Table("flights")
 def lambda_handler(event, context):
     try:
         print(event)
+        name = event["queryStringParameters"]["name"]
         result = table.query(
             IndexName="src_ap-index",
-            KeyConditionExpression=Key("src_ap").eq(
-                event["queryStringParameters"]["name"]
-            ),
+            KeyConditionExpression=Key("src_ap").eq(name),
             Limit=1,
         )
         response = {
