@@ -24,6 +24,8 @@ Resources:
         AttributeType: S
       - AttributeName: src_ap
         AttributeType: S
+      - AttributeName: plane_iata
+        AttributeType: S
       KeySchema:
       - AttributeName: PK
         KeyType: HASH
@@ -36,6 +38,12 @@ Resources:
           KeyType: HASH
         Projection:
           ProjectionType: KEYS_ONLY
+      - IndexName: plane_iata-index
+        KeySchema:
+        - AttributeName: plane_iata
+          KeyType: HASH
+        Projection:
+          ProjectionType: ALL
       BillingMode: PAY_PER_REQUEST
       Tags:
         - Key: DDBTableGroupKey-DataModeling
@@ -55,13 +63,64 @@ Resources:
             Path: /airportByName
             Method: get
 
-Outputs:  
-  AirportByNameApi:
-    Description: "API Gateway endpoint URL for Prod stage for AirportByName function"
-    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/airportByName/"
-  AirportByNameFunction:
-    Description: "AirportByName Lambda Function ARN"
-    Value: !GetAtt AirportByNameFunction.Arn
-  AirportByNameFunctionIamRole:
-    Description: "Implicit IAM Role created for AirPortByName function"
-    Value: !GetAtt AirportByNameFunctionRole.Arn
+  AirportByCodeFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: airport_by_code/
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName: flights
+      Events:
+        AirportByCode:
+          Type: Api
+          Properties:
+            Path: /airportByCode
+            Method: get
+
+  FlightsByCodesFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: flights_by_codes/
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName: flights
+      Events:
+        AirportByCode:
+          Type: Api
+          Properties:
+            Path: /flightsByCodes
+            Method: get
+
+  FlightsByPlaneFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: flights_by_plane/
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName: flights
+      Events:
+        AirportByCode:
+          Type: Api
+          Properties:
+            Path: /flightsByPlane
+            Method: get
+
+  OutboundByAirportFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: outbound_by_airport/
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName: flights
+      Events:
+        AirportByCode:
+          Type: Api
+          Properties:
+            Path: /outboundByAirport
+            Method: get
+
+Outputs:
+  ApiProd:
+    Description: "API Gateway endpoint URL for Prod stage"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/"
+
