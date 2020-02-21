@@ -1,0 +1,67 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: >
+  flights-app
+
+  SAM Template for flights-app
+
+Globals:
+  Function:
+    Timeout: 3
+    Runtime: python3.8
+    Handler: app.lambda_handler
+
+Resources:
+
+  FlightsTable:
+    Type: AWS::DynamoDB::Table
+    Properties:
+      TableName: flights
+      AttributeDefinitions:
+      - AttributeName: PK
+        AttributeType: S
+      - AttributeName: SK
+        AttributeType: S
+      - AttributeName: src_ap
+        AttributeType: S
+      KeySchema:
+      - AttributeName: PK
+        KeyType: HASH
+      - AttributeName: SK
+        KeyType: RANGE
+      GlobalSecondaryIndexes:
+      - IndexName: src_ap-index
+        KeySchema:
+        - AttributeName: src_ap
+          KeyType: HASH
+        Projection:
+          ProjectionType: KEYS_ONLY
+      BillingMode: PAY_PER_REQUEST
+      Tags:
+        - Key: DDBTableGroupKey-DataModeling
+          Value: DataModeling
+  
+  AirportByNameFunction:
+    Type: AWS::Serverless::Function
+    Properties:
+      CodeUri: airport_by_name/
+      Policies:
+      - DynamoDBReadPolicy:
+          TableName: flights
+      Events:
+        AirportByName:
+          Type: Api
+          Properties:
+            Path: /airportByName
+            Method: get
+
+Outputs:  
+  AirportByNameApi:
+    Description: "API Gateway endpoint URL for Prod stage for AirportByName function"
+    Value: !Sub "https://${ServerlessRestApi}.execute-api.${AWS::Region}.amazonaws.com/Prod/airportByName/"
+  AirportByNameFunction:
+    Description: "AirportByName Lambda Function ARN"
+    Value: !GetAtt AirportByNameFunction.Arn
+  AirportByNameFunctionIamRole:
+    Description: "Implicit IAM Role created for AirPortByName function"
+    Value: !GetAtt AirportByNameFunctionRole.Arn
