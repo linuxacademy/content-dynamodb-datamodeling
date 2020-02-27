@@ -15,7 +15,7 @@ sam deploy --guided
 ## Extract data files
 
 ```sh
-gunzip *.gz
+gunzip -k *.gz
 ```
 
 ## Generate and bulk load data into DynamoDB
