@@ -1,0 +1,63 @@
+{
+  "rules": [{
+      "rule-type": "selection",
+      "rule-id": "1",
+      "rule-name": "1",
+      "object-locator": {
+        "schema-name": "employees",
+        "table-name": "dms_source_materialized"
+      },
+      "rule-action": "include"
+    },
+    {
+      "rule-type": "object-mapping",
+      "rule-id": "2",
+      "rule-name": "2",
+      "rule-action": "map-record-to-record",
+      "object-locator": {
+        "schema-name": "employees",
+        "table-name": "dms_source_materialized"
+      },
+      "target-table-name": "employees",
+      "mapping-parameters": {
+        "partition-key-name": "emp_no",
+        "sort-key-name": "salary",
+        "exclude-columns": [
+          "emp_no",
+          "salary"
+        ],
+        "attribute-mappings": [{
+            "target-attribute-name": "emp_no",
+            "attribute-type": "scalar",
+            "attribute-sub-type": "number",
+            "value": "${emp_no}"
+          },
+          {
+            "target-attribute-name": "salary",
+            "attribute-type": "scalar",
+            "attribute-sub-type": "number",
+            "value": "${salary}"
+          },
+          {
+            "target-attribute-name": "title_hierarchy",
+            "attribute-type": "scalar",
+            "attribute-sub-type": "string",
+            "value": "${title}#${title_from_date}#${title_to_date}"
+          },
+          {
+            "target-attribute-name": "salary_hierarchy",
+            "attribute-type": "scalar",
+            "attribute-sub-type": "string",
+            "value": "${salary}#${salary_from_date}#${salary_to_date}"
+          },
+          {
+            "target-attribute-name": "department_hierarchy",
+            "attribute-type": "scalar",
+            "attribute-sub-type": "string",
+            "value": "${department_name}#${dept_from_date}#${dept_to_date}"
+          }
+        ]
+      }
+    }
+  ]
+}
