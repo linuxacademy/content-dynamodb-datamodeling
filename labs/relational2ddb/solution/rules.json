@@ -1,0 +1,52 @@
+{
+    "rules": [
+        {
+            "rule-type": "selection",
+            "rule-id": "1",
+            "rule-name": "1",
+            "object-locator": {
+                "schema-name": "employees",
+                "table-name": "dms_source"
+            },
+            "rule-action": "include"
+        },
+        {
+            "rule-type": "object-mapping",
+            "rule-id": "2",
+            "rule-name": "2",
+            "rule-action": "map-record-to-record",
+            "object-locator": {
+                "schema-name": "employees",
+                "table-name": "dms_source"
+            },
+            "target-table-name": "employees",
+            "mapping-parameters": {
+                "partition-key-name": "department_name",
+                "sort-key-name": "TitleSalt",
+                "exclude-columns": [
+                    "department_name"
+                ],
+                "attribute-mappings": [
+                    {
+                        "target-attribute-name": "department_name",
+                        "attribute-type": "scalar",
+                        "attribute-sub-type": "string",
+                        "value": "${department_name}"
+                    },
+                    {
+                        "target-attribute-name": "TitleSalt",
+                        "attribute-type": "scalar",
+                        "attribute-sub-type": "string",
+                        "value": "${title}#${emp_no}${salary}"
+                    },
+                    {
+                        "target-attribute-name": "Fullname",
+                        "attribute-type": "scalar",
+                        "attribute-sub-type": "string",
+                        "value": "${first_name} ${last_name}"
+                    }
+                ]
+            }
+        }
+    ]
+}
