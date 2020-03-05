@@ -18,6 +18,7 @@ if table_name not in existing_tables:
         AttributeDefinitions=[
             {"AttributeName": "emp_no", "AttributeType": "N"},
             {"AttributeName": "salary", "AttributeType": "N"},
+            {"AttributeName": "manager_name", "AttributeType": "S"},
             {"AttributeName": "department_name", "AttributeType": "S"},
             {"AttributeName": "title", "AttributeType": "S"},
             {"AttributeName": "last_name", "AttributeType": "S"},
